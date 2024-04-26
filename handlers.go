@@ -29,6 +29,7 @@ import (
 	"net/url"
 	"path"
 	"strings"
+	"regexp"
 	"time"
 
 	"github.com/coreos/go-oidc/jose"
@@ -59,7 +60,7 @@ func (r *oauthProxy) getRedirectionURL(w http.ResponseWriter, req *http.Request)
 		// @QUESTION: should I use the X-Forwarded-<header>?? ..
 		redirect = fmt.Sprintf("%s://%s",
 			defaultTo(req.Header.Get("X-Forwarded-Proto"), scheme),
-			defaultTo(req.Header.Get("X-Forwarded-Host"), req.Host))
+			defaultTo(regexp.MustCompile(",\\s?").Split(req.Header.Get("X-Forwarded-Host"), 2)[0], req.Host))
 	default:
 		redirect = r.config.RedirectionURL
 	}

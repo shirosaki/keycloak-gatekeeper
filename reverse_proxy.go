@@ -288,7 +288,11 @@ func (r *oauthProxy) proxyMiddleware(resource *Resource) func(http.Handler) http
 
 			// @step: add the proxy forwarding headers
 			req.Header.Add("X-Forwarded-For", realIP(req)) // TODO(fredbi): check if still necessary with net/http/httputil reverse proxy
-			req.Header.Set("X-Forwarded-Host", req.Host)
+			if fh := req.Header.Get("X-Forwarded-Host"); fh != "" {
+				req.Header.Set("X-Forwarded-Host", fh)
+			} else {
+				req.Header.Set("X-Forwarded-Host", req.Host)
+			}
 			if fp := req.Header.Get("X-Forwarded-Proto"); fp != "" {
 				req.Header.Set("X-Forwarded-Proto", fp)
 			} else {
