@@ -43,6 +43,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/oneconcern/keycloak-gatekeeper/version"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
 type oauthProxy struct {
@@ -146,6 +147,7 @@ func createLogger(config *Config) (*zap.Logger, error) {
 	}
 
 	c := zap.NewProductionConfig()
+	c.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
 	c.DisableStacktrace = true
 	c.DisableCaller = true
 
